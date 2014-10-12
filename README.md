@@ -28,7 +28,7 @@ The curves to be approximated will be the following.
 
 These programs will be named `gn_qua`, `gn_exp`, `gn_log`, and `gn_rat`.
 
-In order to do this, the programs will use Householder Reflections and Givens Rotations to QR-factorize the input points, and then use a modified version of the Gauss-Newton algorithm.
+In order to do this, the programs will use [Householder Reflections](http://en.wikipedia.org/wiki/Householder_transformation) and [Givens Rotations](http://en.wikipedia.org/wiki/Givens_rotation) to [QR-factorize](http://en.wikipedia.org/wiki/QR_decomposition) the input points, and then use a modified version of the Gauss-Newton algorithm.
 
 ###2. Convergence of the Power Method
 
