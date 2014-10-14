@@ -52,3 +52,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# DS_Store
+#  OSX loves to put this everywhere.  But we don't want it.
+.DS_Store
