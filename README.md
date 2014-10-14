@@ -5,7 +5,7 @@ _or_
 
 ----
 
-#####A project aiming to implement the Gauss-Newton method, find the convergence of the power method, and produce a rudimentary 2D animation (full explanations below).  This is a group project, with members (in alphabetical order) [Jayden Gardiner](), [Brenda Lin](), and [Mitchell Manguno](https://github.com/mmanguno) (author of the readme). So, here is a description of all three parts of the project, in their full glory.
+#####A project aiming to implement the Gauss-Newton method, find the convergence of the power method, and produce a rudimentary 2D animation (full explanations below).  This is a group project, with members (in alphabetical order) [Jayden Gardiner](https://github.com/jaydengardiner), [Brenda Lin](), and [Mitchell Manguno](https://github.com/mmanguno) (author of the readme). So, here is a description of all three parts of the project, in their full glory.
 ----
 
 ###1. The Gauss-Newton Method
