@@ -48,22 +48,24 @@ def luDecompose(matrix):
         lMatrices.append(L)
         A = L*A
 
-    #Put together all the L matrices
+    #Put together all the L matrices (turns it into an ndarray)
     lFinal = numpy.zeros((dimensions[0], dimensions[1]))
     for q in lMatrices:
         lFinal = q + lFinal;
 
+    #Turn the lFinal ndarray into a numpy.matrix
+    lFinal = numpy.matrix(lFinal)
+
     #Negate the values of the L matrix
     for w in range(0, dimensions[0] - 1):
         for h in range(0, dimensions[0] - 1):
-            if lFinal == 0:
+            if lFinal[w,h] == 0:
                 continue
             negate = -lFinal[w,h]
-            print(negate)
-            lFinal.put(lFinal, (w+h), negate)
+            numpy.put(lFinal, (w+h), negate)
 
     #Put 1s on the final L's diagonal
     for m in range(0, (dimensions[0] - 1)):
             numpy.put(lFinal, (m * (dimensions[0] + 1)), 1)
 
-    return (lFinal, A)
+    return lFinal
