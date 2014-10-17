@@ -54,5 +54,5 @@ docs/_build/
 target/
 
 # DS_Store
-#  OSX loves to put this everywhere.  But we don't want it.
+#  OSX loves to put this everywhere. But we don't want that.
 .DS_Store

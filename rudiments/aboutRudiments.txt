@@ -1,1 +1,1 @@
-This is a Python package that will hold all the operations that are necessary to run the three implementations.  It is divided up into `basic`, the more simplistic operations, and `advanced`, those operations that may need to call on the basic operations.
+This is a Python package that will hold all the operations that are necessary to run the three implementations.
