@@ -34,7 +34,7 @@ def luDecompose(matrix):
         column = A[:,x:(x+1)]
         L = numpy.zeros((dimensions[0], dimensions[1]))
 		#Put 1s on the L's diagonal
-        for k in range(0, (dimensions[0] - 1)):
+        for k in range(0, (dimensions[0])):
             numpy.put(L, (k * (dimensions[0] + 1)), 1)
         i = 1
         if column[x] == 0:
@@ -57,15 +57,15 @@ def luDecompose(matrix):
     lFinal = numpy.matrix(lFinal)
 
     #Negate the values of the L matrix
-    for w in range(0, dimensions[0] - 1):
-        for h in range(0, dimensions[0] - 1):
+    for w in range(0, dimensions[0]):
+        for h in range(0, dimensions[0]):
             if lFinal[w,h] == 0:
                 continue
             negate = -lFinal[w,h]
-            numpy.put(lFinal, (w+h), negate)
+            numpy.put(lFinal, ((w * dimensions[0]) + h), negate)
 
     #Put 1s on the final L's diagonal
-    for m in range(0, (dimensions[0] - 1)):
+    for m in range(0, (dimensions[0])):
             numpy.put(lFinal, (m * (dimensions[0] + 1)), 1)
 
-    return lFinal
+    return (lFinal, A)
