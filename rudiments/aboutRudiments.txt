@@ -1,1 +1,0 @@
-This is a Python package that will hold all the operations that are necessary to run the three implementations.
