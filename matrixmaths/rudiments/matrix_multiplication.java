@@ -20,7 +20,7 @@ public class matrix_multiplication {
      * @return z New multiplied matrix
      */
     public static Matrix multiply(Matrix x, Matrix y) {
-        double[][] z = new double[x.length - 1][b[0].length - 1];
+        double[][] z = new double[x.length - 1][y[0].length - 1];
         Matrix z = new Matrix(z);
         for (int i = 0; i < x.length; i++) {
             for (int j = 0; j < y[0].length; j++) {
