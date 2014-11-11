@@ -50,7 +50,7 @@ public class matrix_multiplication {
     
     public static Matrix multiply(Matrix[] matrices) {
         double[][] z = new double[matrices.length - 1][matrices.length - 1];
-        Matriz z = new Matrix(z);
+        Matrix z = new Matrix(z);
         for (int b = 1; b < matrices[0].length; b++) {
             for (int i = 0; i < matrices[0] - b; i++) {
                 int j = i + b;

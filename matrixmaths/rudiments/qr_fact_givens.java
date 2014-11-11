@@ -13,12 +13,12 @@ public class qr_fact_givens {
     Matrix Q;
     Matrix R;
     
-    public Givens(double[][] A) {
+    public static void Givens(double[][] A) {
         Matrix matrix = new Matrix(A);
         Givens(matrix);
     }
     
-    public Givens(Matrix A) {
+    public static void Givens(Matrix A) {
         double[][] newMatrix = new double[A.length - 1][A[0].length - 1];
         Matrix Gn = new Matrix(newMatrix);
         Matrix An = new Matrix(newMatrix);
