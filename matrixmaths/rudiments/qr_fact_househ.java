@@ -1,6 +1,8 @@
 package rudiments;
 
 import Jama.Matrix;
+import java.util.ArrayList;
+
 
 /**
  * A class that holds methods that QR-factorize matrices by method of
@@ -33,12 +35,22 @@ public class qr_fact_househ {
         //The ending position of the column; decreases by one every iteration
         int endPos = A.getRowDimension() - 1;
         
+        ArrayList<Matrix> houseHolders = new ArrayList<>();
+        
         for (int i = 0; i < A.getColumnDimension(); i++) {
             Matrix u = calculateU(A.getMatrix(startPos, endPos, chosenColumn));
             Matrix ident = Matrix.identity(A.getRowDimension() - i,
                                                     A.getColumnDimension() - i);
             //From here, we need matrix multiply to find Hn = I - 2uuT
+            Matrix houseNRaw = matrix_multiplication.multiply(u, u.transpose());
+            Matrix houseN = ident.minus(houseNRaw.times(2));
+            houseHolders.add(houseN);
+            chosenColumn[0] = chosenColumn[0]++;
+            startPos++;
+            endPos--;
         }
+        
+        
         
         double[][] dummyQ = null;
         double[][] dummyR = null;

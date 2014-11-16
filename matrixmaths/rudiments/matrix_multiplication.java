@@ -20,21 +20,22 @@ public class matrix_multiplication {
      * @return z New multiplied matrix
      */
     public static Matrix multiply(Matrix x, Matrix y) {
-        double[][] z = new double[x.length - 1][y[0].length - 1];
-        Matrix z = new Matrix(z);
-        for (int i = 0; i < x.length; i++) {
-            for (int j = 0; j < y[0].length; j++) {
-                for (int k = 0; k < x[0].length; k++) {
-                    z[i][j] += x[i][k] * y[k][j]
-                }
-            }
+        
+        if (null == x || y == x || x.getColumnDimension() 
+                                                       != y.getRowDimension()) {
+            throw new IllegalArgumentException();
         }
-        return z;
+        
+        double[][] xDub = x.getArrayCopy();
+        double[][] yDub = y.getArrayCopy();
+        
+        return multiply(xDub, yDub);
+
     }
     
     /**
      * This method takes in two 2D arrays, turns them
-     * into Jawa matrices, then multiplying two
+     * into Jama matrices, then multiplying two
      * matrices will return a new matrix after
      * iterating through the rows and columns of the
      * matrices and calculating the new values.
@@ -43,12 +44,25 @@ public class matrix_multiplication {
      * @return New multiplied matrix
      */
     public static Matrix multiply(double[][] x, double[][] y) {
-        Matrix x = new Matrix(x);
-        Matrix y = new Matrix(y);
-        return multiply(x, y);
+
+        if (null == x || y == x || x.length != y[0].length) {
+                throw new IllegalArgumentException();
+        }
+        
+        double[][] z = new double[x.length][y[0].length];
+        for (int i = 0; i < x.length; i++) {
+            for (int j = 0; j < y[0].length; j++) {
+                for (int k = 0; k < x[0].length; k++) {
+                    z[i][j] += x[i][k] * y[k][j];
+                }
+            }
+        }
+        Matrix zMatrix = new Matrix(z);
+        return zMatrix;
     }
     
-    public static Matrix multiply(Matrix[] matrices) {
+    //Need to convert to double multiplication later.
+    /*public static Matrix multiply(Matrix[] matrices) {
         double[][] z = new double[matrices.length - 1][matrices.length - 1];
         Matrix z = new Matrix(z);
         for (int b = 1; b < matrices[0].length; b++) {
@@ -62,5 +76,5 @@ public class matrix_multiplication {
             }
         }
         return z;
-    }
+    }*/
 }
