@@ -3,8 +3,9 @@ package rudiments;
 import Jama.Matrix;
 
 /**
- * Includes method to calculate Givens rotation
- * Math 2605
+ * A class that holds methods that QR-factorize matrices by method of
+ * Givens rotations.
+ *
  * @author Jayden Gardiner
  * @version 1.0
  */
