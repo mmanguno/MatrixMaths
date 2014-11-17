@@ -24,9 +24,9 @@ public class qr_fact_househ {
      */
     public static Matrix[] factorize(Matrix A) {
         //Check to make sure this is a square matrix
-        if (A.getColumnDimension() != A.getRowDimension() || null == A) {
-            throw new IllegalArgumentException();
-        }
+        //if (A.getColumnDimension() != A.getRowDimension() || null == A) {
+        //    throw new IllegalArgumentException();
+        //}
         
         //The column; increases by one every iteration
         int[] chosenColumn = {0};
@@ -37,26 +37,37 @@ public class qr_fact_househ {
         
         ArrayList<Matrix> houseHolders = new ArrayList<>();
         
-        for (int i = 0; i < A.getColumnDimension(); i++) {
-            Matrix u = calculateU(A.getMatrix(startPos, endPos, chosenColumn));
+        Matrix B = A.copy();
+        
+        for (int i = 0; i < A.getColumnDimension() - 1; i++) {
+            //The identity container for the householder matrix
+            Matrix cont = Matrix.identity(A.getRowDimension(), 
+                                                        A.getColumnDimension());
+            Matrix curMatrix = B.getMatrix(startPos, endPos, chosenColumn);
+            Matrix u = calculateU(curMatrix);
             Matrix ident = Matrix.identity(A.getRowDimension() - i,
                                                     A.getColumnDimension() - i);
             //From here, we need matrix multiply to find Hn = I - 2uuT
             Matrix houseNRaw = matrix_multiplication.multiply(u, u.transpose());
             Matrix houseN = ident.minus(houseNRaw.times(2));
-            houseHolders.add(houseN);
+            //Put the values into the container matrix
+            cont.setMatrix(startPos, A.getRowDimension() - 1, startPos, 
+                                            A.getColumnDimension() - 1, houseN);
+            //cont.print(2, 5);
+            houseHolders.add(cont);
+            B = matrix_multiplication.multiply(cont, B);
             chosenColumn[0] = chosenColumn[0]++;
             startPos++;
             endPos--;
         }
         
+        Matrix Q = Matrix.identity(A.getRowDimension(), A.getColumnDimension());
         
-        
-        double[][] dummyQ = null;
-        double[][] dummyR = null;
-        Matrix Q = new Matrix(dummyQ);
-        Matrix R = new Matrix(dummyR);
-        Matrix[] QR = {Q, R};
+        for (Matrix i : houseHolders) {
+            Q = matrix_multiplication.multiply(Q, i);
+        }
+
+        Matrix[] QR = {Q, B};
         return QR;
     }
     /**
@@ -90,7 +101,6 @@ public class qr_fact_househ {
         
         Matrix eMutated = e.times(magnitude);
         Matrix vMutated = v.plus(eMutated);
-        vMutated.print(2, 1);
         //Get the magnitude of the vMutated matrix
         rawMagnitude = 0;
         for (int j = 0; j < vMutated.getRowDimension(); j++) {
