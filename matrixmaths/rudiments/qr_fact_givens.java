@@ -10,52 +10,59 @@ import Jama.Matrix;
  */
 public class qr_fact_givens {
     
-    Matrix Q;
-    Matrix R;
-    
-    public static void Givens(double[][] A) {
-        Matrix matrix = new Matrix(A);
-        Givens(matrix);
-    }
-    
-    public static void Givens(Matrix A) {
-        double[][] newMatrix = new double[A.length - 1][A[0].length - 1];
-        Matrix Gn = new Matrix(newMatrix);
-        Matrix An = new Matrix(newMatrix);
-        //form identity matrix
+   public static Matrix[] Givens(double[][] A) {
+        if (A == null) {
+            throw new IllegalArgumentException();
+        }
+        
+        double[][] An = A;
+        double[][] Gn = new double[A.length - 1][A.length - 1];
+        double[][] Q = new double[A.length - 1][A.length - 1];
+        
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A.length; j++) {
                 if (i == j) {
                     Gn[i][j] = 1;
+                    Q[i][j] = 1;
                 } else {
                     Gn[i][j] = 0;
+                    Q[i][j] = 0;
                 }
             }
         }
-        //calc cos + sin shit
+
         for (int i = 0; i < A.length; i++) {
             for (int j  = A.length - 1; j > 1; j--) {
-                double x = A[j - 1][i];
-                double y = A[j][i];
+                double x = An[j - 1][i];
+                double y = An[j][i];
                 double cosTheta = x / (Math.sqrt(x * x + y * y));
                 double sinTheta = y / (Math.sqrt(x * x + y * y));
                 Gn[j][j] = cosTheta;
                 Gn[j][j - 1] = sinTheta;
                 Gn[j - 1][j] = -sinTheta;
                 Gn[j - 1][j - 1] = cosTheta;
-                Matrix GnA = multiply(Gn, A);
-                Q = multiply(Gn.transpose(), Q);
-                R = multiply(Gn, R);
-                //....
+                
+                An = matrix_multiplication.multiply2DArrays(Gn, An);
+                Q = matrix_multiplication.multiply2DArrays(Gn, Q);
+                
+                for (int a = 0; a < A.length; a++) {
+                    for (int b = 0; b < A.length; b++) {
+                        if (a == b) {
+                            Gn[a][b] = 1;
+                        } else {
+                            Gn[a][b] = 0;
+                        }
+                    }
+                }
             }
         }
-    }
-    
-    public static Matrix getQ() {
-        return Q;
-    }
-    
-    public static Matrix getR() {
-        return R;
+        
+        Matrix Qmatrix = new Matrix(Q);
+        Qmatrix = Qmatrix.transpose();
+        double[][] R = An;
+        Matrix Rmatrix = new Matrix(R);
+        Matrix[] QR = {Qmatrix, Rmatrix};
+        
+        return QR;
     }
 }
