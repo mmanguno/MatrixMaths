@@ -9,8 +9,15 @@ import Jama.Matrix;
  * @version 1.0
  */
 public class qr_fact_givens {
-    
-   public static Matrix[] Givens(double[][] A) {
+   
+    /**
+     * Takes in a matrix, and decomposes it into a Q matrix and an R matrix by
+     * means of Givens rotations.
+     * 
+     * @param A the given matrix
+     * @return an array of the two matrices, Q and R
+     */
+   public static Matrix[] factorize(double[][] A) {
         if (A == null) {
             throw new IllegalArgumentException();
         }
