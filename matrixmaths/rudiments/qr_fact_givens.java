@@ -3,7 +3,7 @@ package rudiments;
 import Jama.Matrix;
 
 /**
- * A class that holds methods that QR-factorize matrices by method of
+ * A class that holds a method that QR-factorizes matrices by method of
  * Givens rotations.
  *
  * @author Jayden Gardiner
