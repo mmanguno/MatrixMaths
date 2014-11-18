@@ -21,10 +21,10 @@ public class matrix_multiplication {
      */
     public static Matrix multiply(Matrix x, Matrix y) {
         
-        if (null == x || y == x || x.getColumnDimension() 
-                                                       != y.getRowDimension()) {
-            throw new IllegalArgumentException();
-        }
+        //if (null == x || y == x || x.getColumnDimension() 
+        //                                               != y.getRowDimension()) {
+        //    throw new IllegalArgumentException();
+        //}
         
         double[][] xDub = x.getArrayCopy();
         double[][] yDub = y.getArrayCopy();
@@ -45,9 +45,9 @@ public class matrix_multiplication {
      */
     public static Matrix multiply(double[][] x, double[][] y) {
 
-        if (null == x || y == x || x.length != y[0].length) {
-                throw new IllegalArgumentException();
-        }
+        //if (null == x || y == x || x.length != y[0].length) {
+        //        throw new IllegalArgumentException();
+        //}
         
         double[][] z = new double[x.length][y[0].length];
         for (int i = 0; i < x.length; i++) {

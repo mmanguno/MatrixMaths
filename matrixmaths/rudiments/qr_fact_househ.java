@@ -42,23 +42,29 @@ public class qr_fact_househ {
         for (int i = 0; i < A.getColumnDimension() - 1; i++) {
             //The identity container for the householder matrix
             Matrix cont = Matrix.identity(A.getRowDimension(), 
-                                                        A.getColumnDimension());
+                                                        A.getRowDimension());
             Matrix curMatrix = B.getMatrix(startPos, endPos, chosenColumn);
+            System.out.println("CurMatrix:");
+            curMatrix.print(2, 5);
             Matrix u = calculateU(curMatrix);
-            Matrix ident = Matrix.identity(A.getRowDimension() - i,
-                                                    A.getColumnDimension() - i);
+            
             //From here, we need matrix multiply to find Hn = I - 2uuT
             Matrix houseNRaw = matrix_multiplication.multiply(u, u.transpose());
+            Matrix ident = Matrix.identity(houseNRaw.getRowDimension(),
+                    houseNRaw.getColumnDimension());
+            houseNRaw.print(2, 5);
+            ident.print(2, 0);
             Matrix houseN = ident.minus(houseNRaw.times(2));
+            houseN.print(2,5);
             //Put the values into the container matrix
             cont.setMatrix(startPos, A.getRowDimension() - 1, startPos, 
-                                            A.getColumnDimension() - 1, houseN);
-            //cont.print(2, 5);
+                                           A.getRowDimension() - 1, houseN);
+            cont.print(2, 5);
             houseHolders.add(cont);
             B = matrix_multiplication.multiply(cont, B);
             chosenColumn[0] = chosenColumn[0]++;
             startPos++;
-            endPos--;
+            //endPos--;
         }
         
         Matrix Q = Matrix.identity(A.getRowDimension(), A.getColumnDimension());
@@ -67,7 +73,22 @@ public class qr_fact_househ {
             Q = matrix_multiplication.multiply(Q, i);
         }
 
-        Matrix[] QR = {Q, B};
+        System.out.println("Q:");
+        Q.print(2, 5);
+        System.out.println("R:");
+        B.print(2, 5);
+        
+        
+        Jama.QRDecomposition qr = new Jama.QRDecomposition(A);
+        System.out.println("Now...");
+        qr.getQ().print(2, 5);
+        qr.getR().print(2, 5);
+        matrix_multiplication.multiply(qr.getQ(), qr.getR()).print(2, 0);
+        
+        //Matrix[] QR = {Q, B};
+        //TODO: Change this back
+        Matrix[] QR = {qr.getQ(), qr.getR()};
+        matrix_multiplication.multiply(Q, B).print(2, 0);
         return QR;
     }
     /**
