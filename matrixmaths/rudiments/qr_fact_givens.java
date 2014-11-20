@@ -101,7 +101,7 @@ public class qr_fact_givens {
         
         return QR;
     }
-   
+
    public static void printMatrix(double[][] matrix) {
        System.out.println(Arrays.deepToString(matrix));
    }

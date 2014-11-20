@@ -77,4 +77,22 @@ public class matrix_multiplication {
         }
         return z;
     }
+    
+    public static double[] multiplyByVector(double[][] x, double[] y) {
+        double[] z = new double[x.length];
+        for (int i = 0; i < x.length; i++) {
+            for (int j = 0; j < x[0].length; j++) {
+                z[i] += (x[i][j] * y[j]);
+            }
+        }
+        return z;
+    }
+    
+    public static double[] multiplyVectorbyScalar(double[] x, double y) {
+        double[] z = x;
+        for (int i = 0; i < x.length; i++) {
+            z[i] *= y;
+        }
+        return z;
+    }
 }
