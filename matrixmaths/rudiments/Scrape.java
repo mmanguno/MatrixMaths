@@ -13,26 +13,25 @@ public class Scrape {
         
         //Get the points
         System.out.print("File Name: ");
-        //String fileName = input.next();
-        String fileName = "/Users/mitchell/Code/Java/MatrixMaths/matrixmaths/testQuadratic.txt";
+        String fileName = input.next();
         File pointFile = new File(fileName);
         List<Double[]> points = scanFile(pointFile);
         
         //Get the initial guesses
         System.out.print("Guesses (format: a,b,c): ");
-        /*String guessString = input.next();
+        String guessString = input.next();
         Scanner dScan = new Scanner(guessString);
         dScan.useDelimiter(",");
         Double a = Double.valueOf(dScan.next());
         Double b = Double.valueOf(dScan.next());
-        Double c = Double.valueOf(dScan.next());*/
-        Double[] guesses = {1., 3., -1.};
-        //dScan.close();
+        Double c = Double.valueOf(dScan.next());
+        Double[] guesses = {a, b, c};
+        dScan.close();
         
         //Get the iterations
         System.out.println("Iterations: ");
-        //String iterationString = input.next();
-        Integer iterations = 5;//Integer.valueOf(iterationString);
+        String iterationString = input.next();
+        Integer iterations = Integer.valueOf(iterationString);
         
         //Close the input
         input.close();
@@ -64,8 +63,7 @@ public class Scrape {
             throw new IllegalArgumentException("No File Found");
         }
 
-        s.useDelimiter(",|\n|Initial parameters = \\(|\\)");
-        System.out.println(s.hasNextDouble());
+        s.useDelimiter(",|\n|Initial parameters = \\(|\\)| ");
         Double d = null;
 
         
@@ -73,16 +71,17 @@ public class Scrape {
             //If this is the first in a set of points
             if (d == null) {
                 d = s.nextDouble();
-                System.out.println(d);
+                System.out.print(d + ", ");
             }
             Double h = null;
             
             try {
                 h = s.nextDouble();
+                System.out.println(h);
             } catch (java.util.InputMismatchException i) {
+                System.out.println("An Error Occurred within scanning");
                 s.next();
             }
-            System.out.println(h);
             Double[] set = {d, h};
             points.add(set);
             d = null;
