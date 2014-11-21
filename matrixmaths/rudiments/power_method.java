@@ -12,6 +12,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * A class that holds a power iteration method algorithm.
@@ -20,8 +21,15 @@ import javafx.stage.Stage;
  * @version 1.0
  */
 public class power_method extends Application {
+    
+    private static List<Double> traceList = new ArrayList<Double>();
+    private static List<Double> determinantList = new ArrayList<Double>();
+    private static List<Integer> iterationsList = new ArrayList<Integer>();
+    private static List<Double> inverseTraceList = new ArrayList<Double>();
+    private static List<Double> inverseDeterminantList = new ArrayList<Double>();
+    private static List<Integer> inverseIterationsList = new ArrayList<Integer>();
 
-    public static double iterate(double[][] A, double[] v, double ε, int N) {
+    public static int iterate(double[][] A, double[] v, double ε, int N) {
         
         //(A)(old eigenvector)(1 / eigenValue) = new eigenvector
         //eigenVector[0] = new eigenValue
@@ -42,20 +50,18 @@ public class power_method extends Application {
             
             N--;
             
-        } while (N >= 0 && Math.abs(newEigenValue - lastEigenValue) > ε);
+        } while (N > 0 && Math.abs(newEigenValue - lastEigenValue) > ε);
         
         if (Math.abs(newEigenValue - lastEigenValue) > ε) {
             System.out.println("Power iteration quit in failure.");
-            return 0.0;
+            return 100 - N;
         } else {
             System.out.println("Eigenvalue is " + newEigenValue);
-            return newEigenValue;
+            return 100 - N;
         }
     }
     
     public static void matrixGenerator() {
-        List traceList = new ArrayList<>();
-        List determinantList = new ArrayList<>();
         Random rand = new Random();
         double[] initialGuess = {1,1};
         for (int i = 1; i < 1000 + rand.nextInt(1000); i++ ) {
@@ -66,14 +72,16 @@ public class power_method extends Application {
             if (Ainverse != null) {
                 System.out.println(matrixName + " is " + Arrays.deepToString(A));
                 System.out.println(matrixName + " inverse is " + Arrays.deepToString(Ainverse));
-                iterate(A, initialGuess, 0.00005, 100);
+                iterationsList.add(iterate(A, initialGuess, 0.00005, 100));
                 System.out.println("Trace of " + matrixName + " is " + trace(A));
                 traceList.add(trace(A));
                 System.out.println("Determinant of " + matrixName + " is " + determinant(A));
                 determinantList.add(determinant(A));
-                iterate(Ainverse, initialGuess, 0.00005, 100);
+                inverseIterationsList.add(iterate(Ainverse, initialGuess, 0.00005, 100));
                 System.out.println("Trace of " + matrixName + " inverse is " + trace(Ainverse));
+                inverseTraceList.add(trace(Ainverse));
                 System.out.println("Determinant of " + matrixName + " inverse is " + determinant(Ainverse) + "\n");
+                inverseDeterminantList.add(determinant(Ainverse));
             } else {
                 boolean hasInverse = false;
                 while (hasInverse == false) {
@@ -83,21 +91,23 @@ public class power_method extends Application {
                     if (newInverse != null) {
                         System.out.println(matrixName + " is " + Arrays.deepToString(newA));
                         System.out.println(matrixName + " inverse is " + Arrays.deepToString(newInverse));
-                        iterate(newA, initialGuess, 0.00005, 100);
+                        iterationsList.add(iterate(newA, initialGuess, 0.00005, 100));
                         System.out.println("Trace of " + matrixName + " is " + trace(newA));
                         traceList.add(trace(newA));
                         System.out.println("Determinant of " + matrixName + " is " + determinant(newA));
                         determinantList.add(determinant(newA));
-                        iterate(newInverse, initialGuess, 0.00005, 100);
+                        inverseIterationsList.add(iterate(newInverse, initialGuess, 0.00005, 100));
                         System.out.println("Trace of " + matrixName + " inverse is " + trace(newInverse));
+                        inverseTraceList.add(trace(newInverse));
                         System.out.println("Determinant of " + matrixName + " inverse is " + determinant(newInverse) + "\n");
+                        inverseDeterminantList.add(determinant(newInverse));
                         hasInverse = true;
                     }
                 }
                 
             }
-            //record number of iterations needed for running power method on A and A inverse
         }
+        launch();
     }
     
     public static double determinant(double[][] A) {
@@ -120,43 +130,128 @@ public class power_method extends Application {
     }
     
     @Override public void start(Stage stage) {
-        stage.setTitle("Scatter Chart Sample");
-        final NumberAxis xAxis = new NumberAxis(0, 10, 1);
-        final NumberAxis yAxis = new NumberAxis(-100, 500, 100);        
-        final ScatterChart<Number,Number> sc = new
-            ScatterChart<Number,Number>(xAxis,yAxis);
+        stage.setTitle("Matrix Traces vs Determinants");
+        final NumberAxis xAxis = new NumberAxis(-5, 5, 1);
+        final NumberAxis yAxis = new NumberAxis(-5, 5, 1);        
+        final ScatterChart<Number,Number> sc = new ScatterChart<Number,Number>(xAxis,yAxis);
         xAxis.setLabel("Determinants");                
         yAxis.setLabel("Traces");
         sc.setTitle("Matrix Traces vs Determinants");
-       
-        XYChart.Series series1 = new XYChart.Series();
+
+        double[] traceArray = new double[traceList.size()];
+        for (int i = 0; i < traceList.size(); i++) {
+            traceArray[i] = traceList.get(i);
+        }
+        double[] determinantArray = new double[determinantList.size()];
+        for (int i = 0; i < determinantList.size(); i++) {
+            determinantArray[i] = determinantList.get(i);
+        }
+        double[] iterationsArray = new double[iterationsList.size()];
+        for (int i = 0; i < iterationsList.size(); i++) {
+            iterationsArray[i] = iterationsList.get(i);
+        }
         
-        series1.setName("Equities");
-        series1.getData().add(new XYChart.Data(4.2, 193.2));
-        series1.getData().add(new XYChart.Data(2.8, 33.6));
-        series1.getData().add(new XYChart.Data(6.2, 24.8));
-        series1.getData().add(new XYChart.Data(1, 14));
+        XYChart.Series series1 = new XYChart.Series();
+        series1.setName("Less than 20 iterations -> Found eigenvalue");
+        for (int i = 0; i < traceList.size(); i++) {
+            if (iterationsArray[i] <= 20) {
+                series1.getData().add(new XYChart.Data(determinantArray[i], traceArray[i]));
+            }
+        }
         
         XYChart.Series series2 = new XYChart.Series();
-        series2.setName("Mutual funds");
-        series2.getData().add(new XYChart.Data(5.2, 229.2));
-        series2.getData().add(new XYChart.Data(2.4, 37.6));
-        series2.getData().add(new XYChart.Data(3.2, 49.8));
+        series2.setName("20 to 50 iterations -> Found eigenvalue");
+        for (int i = 0; i < traceList.size(); i++) {
+            if (iterationsArray[i] >= 20 && iterationsArray[i] <= 50) {
+                series2.getData().add(new XYChart.Data(determinantArray[i], traceArray[i]));
+            }
+        }
+        
+        XYChart.Series series3 = new XYChart.Series();
+        series3.setName("More than 50 iterations -> Found eigenvalue");
+        for (int i = 0; i < traceList.size(); i++) {
+            if (iterationsArray[i] != 100 && iterationsArray[i] > 50) {
+                series3.getData().add(new XYChart.Data(determinantArray[i], traceArray[i]));
+            }
+        }
+        
+        XYChart.Series series4 = new XYChart.Series();
+        series4.setName("100 iterations -> Ended in failure");
+        for (int i = 0; i < traceList.size(); i++) {
+            if (iterationsArray[i] == 100) {
+                series4.getData().add(new XYChart.Data(determinantArray[i], traceArray[i]));
+            }
+        }
 
- 
-        sc.getData().addAll(series1, series2);
-        Scene scene  = new Scene(sc, 500, 400);
+        sc.getData().addAll(series1, series2, series3, series4);
+        Scene scene  = new Scene(sc, 1000, 800);
         stage.setScene(scene);
         stage.show();
+        
+        
+        
+        final Stage stage2 = new Stage(StageStyle.UTILITY);
+        stage2.setTitle("Matrix Inverse Traces vs Determinants");
+        final NumberAxis x2Axis = new NumberAxis(-5, 5, 1);
+        final NumberAxis y2Axis = new NumberAxis(-5, 5, 1);        
+        final ScatterChart<Number,Number> sc2 = new ScatterChart<Number,Number>(xAxis,yAxis);
+        x2Axis.setLabel("Determinants");                
+        y2Axis.setLabel("Traces");
+        sc2.setTitle("Matrix Inverse Traces vs Determinants");
+
+        double[] inverseTraceArray = new double[inverseTraceList.size()];
+        for (int i = 0; i < inverseTraceList.size(); i++) {
+            inverseTraceArray[i] = inverseTraceList.get(i);
+        }
+        double[] inverseDeterminantArray = new double[inverseDeterminantList.size()];
+        for (int i = 0; i < inverseDeterminantList.size(); i++) {
+            inverseDeterminantArray[i] = inverseDeterminantList.get(i);
+        }
+        double[] inverseIterationsArray = new double[inverseIterationsList.size()];
+        for (int i = 0; i < inverseIterationsList.size(); i++) {
+            inverseIterationsArray[i] = inverseIterationsList.get(i);
+        }
+        
+        XYChart.Series series5 = new XYChart.Series();
+        series5.setName("Less than 20 iterations -> Found eigenvalue");
+        for (int i = 0; i < inverseTraceList.size(); i++) {
+            if (inverseIterationsArray[i] <= 20) {
+                series5.getData().add(new XYChart.Data(inverseDeterminantArray[i], inverseTraceArray[i]));
+            }
+        }
+        
+        XYChart.Series series6 = new XYChart.Series();
+        series6.setName("20 to 50 iterations -> Found eigenvalue");
+        for (int i = 0; i < inverseTraceList.size(); i++) {
+            if (inverseIterationsArray[i] >= 20 && inverseIterationsArray[i] <= 50) {
+                series6.getData().add(new XYChart.Data(inverseDeterminantArray[i], inverseTraceArray[i]));
+            }
+        }
+        
+        XYChart.Series series7 = new XYChart.Series();
+        series7.setName("More than 50 iterations -> Found eigenvalue");
+        for (int i = 0; i < inverseTraceList.size(); i++) {
+            if (inverseIterationsArray[i] != 100 && inverseIterationsArray[i] > 50) {
+                series7.getData().add(new XYChart.Data(inverseDeterminantArray[i], inverseTraceArray[i]));
+            }
+        }
+        
+        XYChart.Series series8 = new XYChart.Series();
+        series8.setName("100 iterations -> Ended in failure");
+        for (int i = 0; i < inverseTraceList.size(); i++) {
+            if (inverseIterationsArray[i] == 100) {
+                series8.getData().add(new XYChart.Data(inverseDeterminantArray[i], inverseTraceArray[i]));
+            }
+        }
+        
+        sc2.getData().addAll(series5, series6, series7, series8);
+        Scene scene2  = new Scene(sc2, 1000, 800);
+        stage2.setScene(scene2);
+        stage2.show();
     }
     
-  //plot two colour-coded scatterplots
-  //x-axis determinant
-  //y-axis trace
-  //second scatterplot for inverse
-    
     public static void main(String[] args) {
-        //matrixGenerator();
+        matrixGenerator();
         //double[][] hello = {{0, 1},{2, 1}};
         //double[][] helloi = inverse(hello);
         //System.out.println(Arrays.deepToString(helloi));
@@ -164,6 +259,6 @@ public class power_method extends Application {
         //double[] hay = {1,1};
         //iterate(hello, hay, 0.00005, 100);
         //iterate(helloInverse, hay, 0.00005, 100);
-        launch(args);
+        
     }
 }
