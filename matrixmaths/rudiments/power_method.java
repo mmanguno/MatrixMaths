@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
 import Jama.Matrix;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -34,6 +33,8 @@ public class power_method extends Application {
         //(A)(old eigenvector)(1 / eigenValue) = new eigenvector
         //eigenVector[0] = new eigenValue
         
+        int originalN = N;
+        
         double[] lastEigenVector = v;
         double lastEigenValue = v[0];
         
@@ -54,10 +55,11 @@ public class power_method extends Application {
         
         if (Math.abs(newEigenValue - lastEigenValue) > ε) {
             System.out.println("Power iteration quit in failure.");
-            return 100 - N;
+            return originalN - N;
         } else {
+            //for A inverse, 1/ eigenvalue = smallest eigenvalue of A
             System.out.println("Eigenvalue is " + newEigenValue);
-            return 100 - N;
+            return originalN - N;
         }
     }
     
@@ -248,17 +250,25 @@ public class power_method extends Application {
         Scene scene2  = new Scene(sc2, 1000, 800);
         stage2.setScene(scene2);
         stage2.show();
+        
+        traceList.clear();
+        determinantList.clear();
+        iterationsList.clear();
+        inverseTraceList.clear();
+        inverseDeterminantList.clear();
+        inverseIterationsList.clear();
     }
     
     public static void main(String[] args) {
-        matrixGenerator();
-        //double[][] hello = {{0, 1},{2, 1}};
+        //matrixGenerator();
+        double[][] hello = {{5, 3},{4, 2}};
         //double[][] helloi = inverse(hello);
         //System.out.println(Arrays.deepToString(helloi));
-        //double[][] helloInverse = inverse(hello);
-        //double[] hay = {1,1};
-        //iterate(hello, hay, 0.00005, 100);
-        //iterate(helloInverse, hay, 0.00005, 100);
+        double[][] helloInverse = inverse(hello);
+        double[] hay = {1,1};
+        iterate(hello, hay, 0.00005, 100);
+        System.out.println(Arrays.deepToString(helloInverse));
+        iterate(helloInverse, hay, 0.00005, 100);
         
     }
 }
