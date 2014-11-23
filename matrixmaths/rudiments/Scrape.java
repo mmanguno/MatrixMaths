@@ -12,24 +12,27 @@ public class Scrape {
         Scanner input = new Scanner(System.in);
         
         //Get the points
-        System.out.print("File Name: ");
+        System.out.print("File Path: ");
         String fileName = input.next();
+        System.out.println("\nPoints Found");
         File pointFile = new File(fileName);
         List<Double[]> points = scanFile(pointFile);
+        System.out.println();
         
         //Get the initial guesses
         System.out.print("Guesses (format: a,b,c): ");
         String guessString = input.next();
         Scanner dScan = new Scanner(guessString);
-        dScan.useDelimiter(",");
+        dScan.useDelimiter(",| ");
         Double a = Double.valueOf(dScan.next());
         Double b = Double.valueOf(dScan.next());
         Double c = Double.valueOf(dScan.next());
         Double[] guesses = {a, b, c};
         dScan.close();
+        System.out.println();
         
         //Get the iterations
-        System.out.println("Iterations: ");
+        System.out.print("Iterations: ");
         String iterationString = input.next();
         Integer iterations = Integer.valueOf(iterationString);
         
@@ -59,7 +62,6 @@ public class Scrape {
             s = new Scanner(input);
         } catch (FileNotFoundException e) {
             //File not found, error
-            System.out.println("File Not Found");
             throw new IllegalArgumentException("No File Found");
         }
 
@@ -71,15 +73,17 @@ public class Scrape {
             //If this is the first in a set of points
             if (d == null) {
                 d = s.nextDouble();
-                System.out.print(d + ", ");
+                System.out.print("(" + d + ", ");
             }
             Double h = null;
             
             try {
                 h = s.nextDouble();
-                System.out.println(h);
+                System.out.println(h + ")");
             } catch (java.util.InputMismatchException i) {
-                System.out.println("An Error Occurred within scanning");
+                System.out.println("An Error Occurred within scanning."
+                        + "Please confirm the points have been entered, or that"
+                        + "the file is not malformed.");
                 s.next();
             }
             Double[] set = {d, h};
