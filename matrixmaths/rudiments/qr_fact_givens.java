@@ -26,15 +26,15 @@ public class qr_fact_givens {
         }
         
         double[][] An = A;
-        double[][] Gn = new double[A.length][A.length];
+        double[][] Gn = new double[A.length][A[0].length];
         double[][] Q = new double[A.length][A.length];
         
         System.out.println(); 
-        System.out.println("Number of rows and columns in our original matrix: " + (A.length) + " x " + (A.length) + ".");
+        System.out.println("Number of rows and columns in our original matrix: " + (A.length) + " x " + (A[0].length) + ".");
         System.out.println();  
         
         for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A.length; j++) {
+            for (int j = 0; j < A[0].length; j++) {
                 if (i == j) {
                     Gn[i][j] = 1;
                     Q[i][j] = 1;
@@ -48,7 +48,7 @@ public class qr_fact_givens {
         int iteration = 1;
 
         for (int i = 0; i < A.length; i++) {
-            for (int j  = A.length - 1; j > i + 1; j--) {
+            for (int j  = A[0].length - 1; j > i; j--) {
                 double x = An[j - 1][i];
                 double y = An[j][i];
                 double cosTheta = x / (Math.sqrt(x * x + y * y));
@@ -69,7 +69,7 @@ public class qr_fact_givens {
                 Q = matrix_multiplication.multiply2DArrays(Gn, Q);
                 
                 for (int a = 0; a < A.length; a++) {
-                    for (int b = 0; b < A.length; b++) {
+                    for (int b = 0; b < A[0].length; b++) {
                         if (a == b) {
                             Gn[a][b] = 1;
                         } else {
@@ -94,7 +94,7 @@ public class qr_fact_givens {
         Matrix[] QR = {Qmatrix, Rmatrix};
         
         System.out.println("QR:");
-        Matrix mm = matrix_multiplication.multiply(Q, R);
+        Matrix mm = matrix_multiplication.multiply(Qmatrix, Rmatrix);
         mm.print(2, 5);
         System.out.println("A:");
         new Matrix(A).print(2, 5);
@@ -107,7 +107,7 @@ public class qr_fact_givens {
    }
    
    public static void main(String[] args) {
-       double[][] hello = {{6, 5, 3},{5, 1, 3}, {1,2,3}};
+       double[][] hello = {{67, 2, 3}, {1,54,3}, {12, 2, 3}, {5,7,2}, {1,2,3}};
        factorize(hello);
    }
 }

@@ -62,11 +62,6 @@ public class matrix_multiplication {
     }
     
     public static double[][] multiply2DArrays(double[][] x, double[][] y) {
-
-        if (null == x || y == x || x.length != y[0].length) {
-                throw new IllegalArgumentException();
-        }
-        
         double[][] z = new double[x.length][y[0].length];
         for (int i = 0; i < x.length; i++) {
             for (int j = 0; j < y[0].length; j++) {
@@ -82,7 +77,7 @@ public class matrix_multiplication {
         double[] z = new double[x.length];
         for (int i = 0; i < x.length; i++) {
             for (int j = 0; j < x[0].length; j++) {
-                z[i] += (x[i][j] * y[j]);
+                z[i] += x[i][j] * y[j];
             }
         }
         return z;

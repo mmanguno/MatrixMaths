@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import Jama.Matrix;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
@@ -44,20 +43,28 @@ public class power_method extends Application {
         do {
             lastEigenVector = newEigenVector;
             lastEigenValue = newEigenValue;
-            
             newEigenVector = matrix_multiplication.multiplyByVector(A, lastEigenVector);
             newEigenVector = matrix_multiplication.multiplyVectorbyScalar(newEigenVector, (1 / lastEigenValue));
             newEigenValue = newEigenVector[0];
             
             N--;
             
-        } while (N > 0 && Math.abs(newEigenValue - lastEigenValue) > ε);
+        } while (newEigenValue != 0 && N > 0 && Math.abs(newEigenValue - lastEigenValue) > ε);
         
         double numberOfIterations = originalN - N;
         double[] returnValues = {newEigenValue, numberOfIterations};
         
+        if (newEigenValue == v[0]) {
+            System.out.println("Power iteration quit in failure.");
+            returnValues[0] = 0.0;
+            returnValues[1] = originalN;
+            return returnValues;
+        }
+        
         if (Math.abs(newEigenValue - lastEigenValue) > ε) {
             System.out.println("Power iteration quit in failure.");
+            returnValues[0] = 0.0;
+            //returnValues[0] = null <- fix this
             return returnValues;
             
         } else {
@@ -84,9 +91,9 @@ public class power_method extends Application {
                 traceList.add(trace(A));
                 System.out.println("Determinant of " + matrixName + " is " + determinant(A));
                 determinantList.add(determinant(A));
-                double[] inverseIteration = iterate(A, initialGuess, 0.00005, 100);
+                double[] inverseIteration = iterate(Ainverse, initialGuess, 0.00005, 100);
                 inverseIterationsList.add(inverseIteration[1]);
-                System.out.println("The smallest eigenvalue of A is " + (1.0 / inverseIteration[0]));
+                System.out.println("The smallest eigenvalue of A is " + (1.0 / inverseIteration[0])); // fix if EV is 0.0, 1 / 0.0 infinity
                 System.out.println("Trace of " + matrixName + " inverse is " + trace(Ainverse));
                 inverseTraceList.add(trace(Ainverse));
                 System.out.println("Determinant of " + matrixName + " inverse is " + determinant(Ainverse) + "\n");
@@ -109,7 +116,7 @@ public class power_method extends Application {
                         determinantList.add(determinant(newA));
                         double[] inverseIteration = iterate(newInverse, initialGuess, 0.00005, 100);
                         inverseIterationsList.add(inverseIteration[1]);
-                        System.out.println("The smallest eigenvalue of A is " + (1.0 / inverseIteration[0]));
+                        System.out.println("The smallest eigenvalue of A is " + (1.0 / inverseIteration[0])); // fix if EV is 0.0, 1 / 0.0 infinity
                         System.out.println("Trace of " + matrixName + " inverse is " + trace(newInverse));
                         inverseTraceList.add(trace(newInverse));
                         System.out.println("Determinant of " + matrixName + " inverse is " + determinant(newInverse) + "\n");
@@ -272,12 +279,13 @@ public class power_method extends Application {
     
     public static void main(String[] args) {
         matrixGenerator();
-        //double[][] hello = {{5, 3},{4, 2}};
+        //double[][] hello = {{0.045155365101399614, -1.3394481969137424}, {0.6121331247437676, -1.3719453534655928}};
         //double[][] helloi = inverse(hello);
         //System.out.println(Arrays.deepToString(helloi));
         //double[][] helloInverse = inverse(hello);
         //double[] hay = {1,1};
-        //iterate(hello, hay, 0.00005, 100);
+        //System.out.println("IT IS " + iterate(hello, hay, 0.00005, 100)[0]);
+        //System.out.println(iterate(helloInverse, hay, 0.00005, 100)[0]);
         //System.out.println(Arrays.deepToString(helloInverse));
         //iterate(helloInverse, hay, 0.00005, 100);
     }
