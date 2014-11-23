@@ -23,12 +23,12 @@ public class power_method extends Application {
     
     private static List<Double> traceList = new ArrayList<Double>();
     private static List<Double> determinantList = new ArrayList<Double>();
-    private static List<Integer> iterationsList = new ArrayList<Integer>();
+    private static List<Double> iterationsList = new ArrayList<Double>();
     private static List<Double> inverseTraceList = new ArrayList<Double>();
     private static List<Double> inverseDeterminantList = new ArrayList<Double>();
-    private static List<Integer> inverseIterationsList = new ArrayList<Integer>();
+    private static List<Double> inverseIterationsList = new ArrayList<Double>();
 
-    public static int iterate(double[][] A, double[] v, double ε, int N) {
+    public static double[] iterate(double[][] A, double[] v, double ε, int N) {
         
         //(A)(old eigenvector)(1 / eigenValue) = new eigenvector
         //eigenVector[0] = new eigenValue
@@ -53,13 +53,16 @@ public class power_method extends Application {
             
         } while (N > 0 && Math.abs(newEigenValue - lastEigenValue) > ε);
         
+        double numberOfIterations = originalN - N;
+        double[] returnValues = {newEigenValue, numberOfIterations};
+        
         if (Math.abs(newEigenValue - lastEigenValue) > ε) {
             System.out.println("Power iteration quit in failure.");
-            return originalN - N;
+            return returnValues;
+            
         } else {
             //for A inverse, 1/ eigenvalue = smallest eigenvalue of A
-            System.out.println("Eigenvalue is " + newEigenValue);
-            return originalN - N;
+            return returnValues;
         }
     }
     
@@ -74,12 +77,16 @@ public class power_method extends Application {
             if (Ainverse != null) {
                 System.out.println(matrixName + " is " + Arrays.deepToString(A));
                 System.out.println(matrixName + " inverse is " + Arrays.deepToString(Ainverse));
-                iterationsList.add(iterate(A, initialGuess, 0.00005, 100));
+                double[] iteration = iterate(A, initialGuess, 0.00005, 100);
+                iterationsList.add(iteration[1]);
+                System.out.println("The largest eigenvalue of A is " + iteration[0]);
                 System.out.println("Trace of " + matrixName + " is " + trace(A));
                 traceList.add(trace(A));
                 System.out.println("Determinant of " + matrixName + " is " + determinant(A));
                 determinantList.add(determinant(A));
-                inverseIterationsList.add(iterate(Ainverse, initialGuess, 0.00005, 100));
+                double[] inverseIteration = iterate(A, initialGuess, 0.00005, 100);
+                inverseIterationsList.add(inverseIteration[1]);
+                System.out.println("The smallest eigenvalue of A is " + (1.0 / inverseIteration[0]));
                 System.out.println("Trace of " + matrixName + " inverse is " + trace(Ainverse));
                 inverseTraceList.add(trace(Ainverse));
                 System.out.println("Determinant of " + matrixName + " inverse is " + determinant(Ainverse) + "\n");
@@ -93,12 +100,16 @@ public class power_method extends Application {
                     if (newInverse != null) {
                         System.out.println(matrixName + " is " + Arrays.deepToString(newA));
                         System.out.println(matrixName + " inverse is " + Arrays.deepToString(newInverse));
-                        iterationsList.add(iterate(newA, initialGuess, 0.00005, 100));
+                        double[] iteration = iterate(newA, initialGuess, 0.00005, 100);
+                        iterationsList.add(iteration[1]);
+                        System.out.println("The largest eigenvalue of A is " + iteration[0]);
                         System.out.println("Trace of " + matrixName + " is " + trace(newA));
                         traceList.add(trace(newA));
                         System.out.println("Determinant of " + matrixName + " is " + determinant(newA));
                         determinantList.add(determinant(newA));
-                        inverseIterationsList.add(iterate(newInverse, initialGuess, 0.00005, 100));
+                        double[] inverseIteration = iterate(newInverse, initialGuess, 0.00005, 100);
+                        inverseIterationsList.add(inverseIteration[1]);
+                        System.out.println("The smallest eigenvalue of A is " + (1.0 / inverseIteration[0]));
                         System.out.println("Trace of " + matrixName + " inverse is " + trace(newInverse));
                         inverseTraceList.add(trace(newInverse));
                         System.out.println("Determinant of " + matrixName + " inverse is " + determinant(newInverse) + "\n");
@@ -260,15 +271,14 @@ public class power_method extends Application {
     }
     
     public static void main(String[] args) {
-        //matrixGenerator();
-        double[][] hello = {{5, 3},{4, 2}};
+        matrixGenerator();
+        //double[][] hello = {{5, 3},{4, 2}};
         //double[][] helloi = inverse(hello);
         //System.out.println(Arrays.deepToString(helloi));
-        double[][] helloInverse = inverse(hello);
-        double[] hay = {1,1};
-        iterate(hello, hay, 0.00005, 100);
-        System.out.println(Arrays.deepToString(helloInverse));
-        iterate(helloInverse, hay, 0.00005, 100);
-        
+        //double[][] helloInverse = inverse(hello);
+        //double[] hay = {1,1};
+        //iterate(hello, hay, 0.00005, 100);
+        //System.out.println(Arrays.deepToString(helloInverse));
+        //iterate(helloInverse, hay, 0.00005, 100);
     }
 }

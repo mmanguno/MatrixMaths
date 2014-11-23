@@ -107,7 +107,7 @@ public class qr_fact_givens {
    }
    
    public static void main(String[] args) {
-       double[][] hello = {{6, 5, 1},{5, 1, 1}, {1, 1,1}};
+       double[][] hello = {{6, 5, 3},{5, 1, 3}, {1,2,3}};
        factorize(hello);
    }
 }
