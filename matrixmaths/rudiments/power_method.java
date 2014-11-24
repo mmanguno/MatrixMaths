@@ -1,9 +1,14 @@
 package rudiments;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
@@ -14,6 +19,9 @@ import javafx.stage.StageStyle;
 
 /**
  * A class that holds a power iteration method algorithm.
+ * This class also has a method which generates over a
+ * thousand matrices and produces a scatter plot based
+ * on their data.
  * Math 2605
  * @author Jayden Gardiner
  * @version 1.0
@@ -26,11 +34,9 @@ public class power_method extends Application {
     private static List<Double> inverseTraceList = new ArrayList<Double>();
     private static List<Double> inverseDeterminantList = new ArrayList<Double>();
     private static List<Double> inverseIterationsList = new ArrayList<Double>();
+    private static Scanner keyboard = new Scanner(System.in);
 
-    public static double[] iterate(double[][] A, double[] v, double ε, int N) {
-        
-        //(A)(old eigenvector)(1 / eigenValue) = new eigenvector
-        //eigenVector[0] = new eigenValue
+    public static double[][] iterate(double[][] A, double[] v, double ε, int N) {
         
         int originalN = N;
         
@@ -52,19 +58,20 @@ public class power_method extends Application {
         } while (newEigenValue != 0 && N > 0 && Math.abs(newEigenValue - lastEigenValue) > ε);
         
         double numberOfIterations = originalN - N;
-        double[] returnValues = {newEigenValue, numberOfIterations};
+        double[][] returnValues = {{newEigenValue, numberOfIterations}, newEigenVector};
         
         if (newEigenValue == v[0]) {
-            System.out.println("Power iteration quit in failure.");
-            returnValues[0] = 0.0;
-            returnValues[1] = originalN;
+            //0.0 == failure
+            
+            returnValues[0][0] = 0.0;
+            returnValues[1][1] = originalN;
             return returnValues;
         }
         
         if (Math.abs(newEigenValue - lastEigenValue) > ε) {
-            System.out.println("Power iteration quit in failure.");
-            returnValues[0] = 0.0;
-            //returnValues[0] = null <- fix this
+            //0.0 == failure
+            
+            returnValues[0][0] = 0.0;
             return returnValues;
             
         } else {
@@ -76,50 +83,76 @@ public class power_method extends Application {
     public static void matrixGenerator() {
         Random rand = new Random();
         double[] initialGuess = {1,1};
+        String data = "Running power method on over 1000 randomly generated matrices.\n\n";
+        
         for (int i = 1; i < 1000 + rand.nextInt(1000); i++ ) {
+            
             double[][] A = { {4 * (rand.nextDouble()) - 2, 4 * (rand.nextDouble()) - 2},
                     {4 * (rand.nextDouble()) - 2, 4 * (rand.nextDouble()) - 2}};
             double[][] Ainverse = inverse(A);
             String matrixName = "Matrix" + i;
+            
             if (Ainverse != null) {
-                System.out.println(matrixName + " is " + Arrays.deepToString(A));
-                System.out.println(matrixName + " inverse is " + Arrays.deepToString(Ainverse));
-                double[] iteration = iterate(A, initialGuess, 0.00005, 100);
-                iterationsList.add(iteration[1]);
-                System.out.println("The largest eigenvalue of A is " + iteration[0]);
-                System.out.println("Trace of " + matrixName + " is " + trace(A));
+                
+                data += matrixName + " is " + Arrays.deepToString(A) + "\n";
+                data += matrixName + " inverse is " + Arrays.deepToString(Ainverse) + "\n";
+                double[][] iteration = iterate(A, initialGuess, 0.00005, 100);
+                iterationsList.add(iteration[0][1]);
+                if (iteration[0][0] != 0.0) {
+                    data += "The largest eigenvalue of A is " + iteration[0][0] + "\n";
+                } else {
+                    data += "Power method quit in failure.\n";
+                }
+                data += "Trace of " + matrixName + " is " + trace(A) + "\n";
                 traceList.add(trace(A));
-                System.out.println("Determinant of " + matrixName + " is " + determinant(A));
+                data += "Determinant of " + matrixName + " is " + determinant(A) + "\n";
                 determinantList.add(determinant(A));
-                double[] inverseIteration = iterate(Ainverse, initialGuess, 0.00005, 100);
-                inverseIterationsList.add(inverseIteration[1]);
-                System.out.println("The smallest eigenvalue of A is " + (1.0 / inverseIteration[0])); // fix if EV is 0.0, 1 / 0.0 infinity
-                System.out.println("Trace of " + matrixName + " inverse is " + trace(Ainverse));
+                
+                double[][] inverseIteration = iterate(Ainverse, initialGuess, 0.00005, 100);
+                inverseIterationsList.add(inverseIteration[0][1]);
+                if (inverseIteration[0][0] != 0.0) {
+                    data += "The smallest eigenvalue of A is " + (1.0 / inverseIteration[0][0]) + "\n";
+                } else {
+                    data += "Power method quit in failure.\n";
+                }
+                data += "Trace of " + matrixName + " inverse is " + trace(Ainverse) + "\n";
                 inverseTraceList.add(trace(Ainverse));
-                System.out.println("Determinant of " + matrixName + " inverse is " + determinant(Ainverse) + "\n");
+                data += "Determinant of " + matrixName + " inverse is " + determinant(Ainverse) + "\n\n";
                 inverseDeterminantList.add(determinant(Ainverse));
+                
             } else {
+                
                 boolean hasInverse = false;
                 while (hasInverse == false) {
                     double[][] newA = { {4 * (rand.nextDouble()) - 2, 4 * (rand.nextDouble()) - 2},
                             {4 * (rand.nextDouble()) - 2, 4 * (rand.nextDouble()) - 2}};
                     double[][] newInverse = inverse(newA);
+                    
                     if (newInverse != null) {
-                        System.out.println(matrixName + " is " + Arrays.deepToString(newA));
-                        System.out.println(matrixName + " inverse is " + Arrays.deepToString(newInverse));
-                        double[] iteration = iterate(newA, initialGuess, 0.00005, 100);
-                        iterationsList.add(iteration[1]);
-                        System.out.println("The largest eigenvalue of A is " + iteration[0]);
-                        System.out.println("Trace of " + matrixName + " is " + trace(newA));
+                        data += matrixName + " is " + Arrays.deepToString(newA) + "\n";
+                        data += matrixName + " inverse is " + Arrays.deepToString(newInverse) + "\n";
+                        double[][] iteration = iterate(newA, initialGuess, 0.00005, 100);
+                        iterationsList.add(iteration[0][1]);
+                        if (iteration[0][0] != 0.0) {
+                            data += "The largest eigenvalue of A is " + iteration[0] + "\n";
+                        } else {
+                            data += "Power method quit in failure.\n";
+                        }
+                        data += "Trace of " + matrixName + " is " + trace(newA) + "\n";
                         traceList.add(trace(newA));
-                        System.out.println("Determinant of " + matrixName + " is " + determinant(newA));
+                        data += "Determinant of " + matrixName + " is " + determinant(newA) + "\n";
                         determinantList.add(determinant(newA));
-                        double[] inverseIteration = iterate(newInverse, initialGuess, 0.00005, 100);
-                        inverseIterationsList.add(inverseIteration[1]);
-                        System.out.println("The smallest eigenvalue of A is " + (1.0 / inverseIteration[0])); // fix if EV is 0.0, 1 / 0.0 infinity
-                        System.out.println("Trace of " + matrixName + " inverse is " + trace(newInverse));
+                        
+                        double[][] inverseIteration = iterate(newInverse, initialGuess, 0.00005, 100);
+                        inverseIterationsList.add(inverseIteration[0][1]);
+                        if (inverseIteration[0][0] != 0.0) {
+                            data += "The smallest eigenvalue of A is " + (1.0 / inverseIteration[0][0]) + "\n";
+                        } else {
+                            data += "Power method quit in failure.\n";
+                        }
+                        data += "Trace of " + matrixName + " inverse is " + trace(newInverse) + "\n";
                         inverseTraceList.add(trace(newInverse));
-                        System.out.println("Determinant of " + matrixName + " inverse is " + determinant(newInverse) + "\n");
+                        data += "Determinant of " + matrixName + " inverse is " + determinant(newInverse) + "\n\n";
                         inverseDeterminantList.add(determinant(newInverse));
                         hasInverse = true;
                     }
@@ -128,6 +161,21 @@ public class power_method extends Application {
             }
         }
         launch();
+        
+        try {
+
+            File file = new File("Matrix Generator Data.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(data);
+            bw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public static double determinant(double[][] A) {
@@ -150,9 +198,12 @@ public class power_method extends Application {
     }
     
     @Override public void start(Stage stage) {
+        
+        //matrices graph
+        
         stage.setTitle("Matrix Traces vs Determinants");
-        final NumberAxis xAxis = new NumberAxis(-5, 5, 1);
-        final NumberAxis yAxis = new NumberAxis(-5, 5, 1);        
+        final NumberAxis xAxis = new NumberAxis(-7, 7, 1);
+        final NumberAxis yAxis = new NumberAxis(-7, 7, 1);        
         final ScatterChart<Number,Number> sc = new ScatterChart<Number,Number>(xAxis,yAxis);
         xAxis.setLabel("Determinants");                
         yAxis.setLabel("Traces");
@@ -208,13 +259,13 @@ public class power_method extends Application {
         stage.setScene(scene);
         stage.show();
         
-        
+        //inverse matrices graph
         
         final Stage stage2 = new Stage(StageStyle.UTILITY);
         stage2.setTitle("Matrix Inverse Traces vs Determinants");
-        final NumberAxis x2Axis = new NumberAxis(-5, 5, 1);
-        final NumberAxis y2Axis = new NumberAxis(-5, 5, 1);        
-        final ScatterChart<Number,Number> sc2 = new ScatterChart<Number,Number>(xAxis,yAxis);
+        final NumberAxis x2Axis = new NumberAxis(-20, 20, 1);
+        final NumberAxis y2Axis = new NumberAxis(-20, 20, 1);        
+        final ScatterChart<Number,Number> sc2 = new ScatterChart<Number,Number>(x2Axis,y2Axis);
         x2Axis.setLabel("Determinants");                
         y2Axis.setLabel("Traces");
         sc2.setTitle("Matrix Inverse Traces vs Determinants");
@@ -278,15 +329,41 @@ public class power_method extends Application {
     }
     
     public static void main(String[] args) {
-        matrixGenerator();
-        //double[][] hello = {{0.045155365101399614, -1.3394481969137424}, {0.6121331247437676, -1.3719453534655928}};
-        //double[][] helloi = inverse(hello);
-        //System.out.println(Arrays.deepToString(helloi));
-        //double[][] helloInverse = inverse(hello);
-        //double[] hay = {1,1};
-        //System.out.println("IT IS " + iterate(hello, hay, 0.00005, 100)[0]);
-        //System.out.println(iterate(helloInverse, hay, 0.00005, 100)[0]);
-        //System.out.println(Arrays.deepToString(helloInverse));
-        //iterate(helloInverse, hay, 0.00005, 100);
+        System.out.println("Press 1 to run matrixGenerator and generate the data for over 1000 square matrices.\n");
+        System.out.println("Press 2 to iterate through the power method using your own parameters.");
+        int input = keyboard.nextInt();
+        if (input == 1) {
+            System.out.println("Check Matrix Generator Data.txt for a list of all the data recorded.");
+            System.out.println("Graphs should appear showing data for both the matrices and inverse matrices.");
+            matrixGenerator();
+        } else {
+            System.out.println("Declare a 2 x 2 matrix by typing in four doubles. Matrix will be generated as {{input1, input2}, {input3, input4}}'");
+            double a = keyboard.nextDouble();
+            double b = keyboard.nextDouble();
+            double c = keyboard.nextDouble();
+            double d = keyboard.nextDouble();
+            double[][] matrix = {{a, b}, {c, d}};
+            System.out.println("Declare your initial guess vector by typing in two doubles. Matrix will be generated as '{input1, input2}'");
+            double e = keyboard.nextDouble();
+            double f = keyboard.nextDouble();
+            double[] initialGuess = {e, f};
+            System.out.println("Declare your value ε as a double, such as 1.0");
+            double ε = keyboard.nextDouble();
+            System.out.println("Declare your number of iterations as an integer, such as 100");
+            int N = keyboard.nextInt();
+            double[][] iteration = iterate(matrix, initialGuess, ε, N);
+            if (iteration[0][0] != 0.0) {
+                System.out.println("Calculated largest eigenvalue is " + iteration[0][0]);
+            } else {
+                System.out.println("Power method quit in failure.");
+            }
+            if ((iterate(inverse(matrix), initialGuess, ε, N)[0][0]) != 0.0) {
+                System.out.println("Calculated smallest eigenvalue is " + (1.0 / (iterate(inverse(matrix), initialGuess, ε, N)[0][0])));
+            } else {
+                System.out.println("Power method quit in failure.");
+            }
+            System.out.println("Calculated eigenvector is " + Arrays.toString(iteration[1]));
+            System.out.println("Number of iterations: " + (int) iteration[0][1]);
+        }
     }
 }
