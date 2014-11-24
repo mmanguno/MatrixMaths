@@ -1,7 +1,6 @@
 package rudiments;
 
 import Jama.Matrix;
-import Jama.QRDecomposition;
 
 import java.util.ArrayList;
 
@@ -70,21 +69,7 @@ public class qr_fact_househ {
         for (Matrix i : houseHolders) {
             Q = matrix_multiplication.multiply(Q, i);
         }
-        
-        /*Jama.QRDecomposition real = new Jama.QRDecomposition(A);
-        
-        System.out.println("Q produced:");
-        Q.print(2, 5);
-        
-        System.out.println("Q real:");
-        real.getQ().print(2, 5);
-        
-        System.out.println("R produced:");
-        B.print(2, 5);
-        
-        System.out.println("R real:");
-        real.getR().print(2, 5);
-        */
+
         Matrix[] QR = {Q, B};
         return QR;
     }
