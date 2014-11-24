@@ -3,6 +3,7 @@ import java.util.List;
 import Jama.Matrix;
 import rudiments.Scrape;
 import rudiments.matrix_multiplication;
+import rudiments.qr_fact_givens;
 import rudiments.qr_fact_househ;
 
 public class gn_exp {
@@ -21,8 +22,10 @@ public class gn_exp {
         List<Double[]> points = (List<Double[]>) info[0];
         Double[] guesses = (Double[]) info[1];
         Integer iterations = (Integer) info[2];
+        Boolean householder = (Boolean) info[3];
 
-        Double[] curve = gaussNewton(points, guesses, iterations.intValue());
+        Double[] curve = gaussNewton(points, guesses, iterations.intValue(),
+                                                    householder.booleanValue());
 
         System.out.println("\nParameters:");
         System.out.println("a: " + curve[0]);
@@ -32,7 +35,7 @@ public class gn_exp {
     }
 
     private static Double[] gaussNewton(List<Double[]> points, Double[] guesses,
-                                                               int iterations) {
+                                          int iterations, boolean householder) {
 
         int iter = 0;
         
@@ -60,7 +63,8 @@ public class gn_exp {
             }
 
             //QR decompose the Jacobian
-            Matrix[] QR = qr_fact_househ.factorize(jacobian);
+            Matrix[] QR = householder ? qr_fact_househ.factorize(jacobian):
+                                        qr_fact_givens.factorize(jacobian);
 
             Matrix Q = QR[0];
             Matrix R = QR[1];

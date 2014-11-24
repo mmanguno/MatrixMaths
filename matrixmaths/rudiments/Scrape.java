@@ -35,12 +35,25 @@ public class Scrape {
         System.out.print("Iterations: ");
         String iterationString = input.next();
         Integer iterations = Integer.valueOf(iterationString);
+        System.out.println();
+        
+        //Choose the method
+        Boolean householder = new Boolean(false);
+        System.out.print("Householder or Givens? ");
+        String houseString = input.next();
+        houseString = houseString.toLowerCase();
+        if (houseString.equals("householder") || houseString.equals("h")) {
+            householder = Boolean.TRUE;
+            System.out.println("Householder Reflections Chosen");
+        } else {
+            System.out.println("Givens Rotations Chosen");
+        }
         
         //Close the input
         input.close();
         
         //Pack up the information
-        Object[] pack = {points, guesses, iterations};
+        Object[] pack = {points, guesses, iterations, householder};
         
         //Send it up
         return pack;
