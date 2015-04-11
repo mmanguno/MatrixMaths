@@ -35,11 +35,6 @@ In order to do this, the programs will use [Householder Reflections][5] and [Giv
 
 _decription to come..._
 
-###3. Animation in Two Dimensions
-
-_description to come..._
-
-
 ##External Libraries Used
 
 ###[JAMA][10], _A Java Matrix Package_
