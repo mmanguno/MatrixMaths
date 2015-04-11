@@ -33,7 +33,7 @@ In order to do this, the programs will use [Householder Reflections][5] and [Giv
 
 ###2. Convergence of the Power Method
 
-_decription to come..._
+For this part of the project, over 1000 2x2 matrices with its values in the boundaries [-2, 2] will be randomly generated. The power method will then be run on all these matrices, which is used to find the doiminant eigenvalue for a matrix. The method will also be run for the matrices' inverses, and also the matrices' determinants will be calculated. This information is graphed using Java FX and written to a txt file, for study and analysis of trends between eigenvalues and determinants.
 
 ##External Libraries Used
 
